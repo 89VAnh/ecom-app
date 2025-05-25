@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import pool from "@/lib/db";
+import { env } from "process";
 
 const crawlerUpdateSchema = z.object({
   name: z.string(),
@@ -54,7 +55,7 @@ async function startCrawler(crawlerId: number, metadata: string) {
   };
 
   // Call the Python FastAPI service
-  await fetch("http://playwright-python:5000/run-crawler", {
+  await fetch(`${env.CRAWLER_URL}/run-crawler`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
@@ -65,7 +66,7 @@ async function startCrawler(crawlerId: number, metadata: string) {
 
 async function stopCrawler(crawlerId: number) {
   console.log("Crawler is paused, stopping execution...");
-  const url = `http://playwright-python:5000/stop-crawler/${crawlerId}`;
+  const url = `${env.CRAWLER_URL}/stop-crawler/${crawlerId}`;
   const response = await fetch(url, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
