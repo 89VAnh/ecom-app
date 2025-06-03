@@ -109,7 +109,7 @@ export function AddCrawlerDialog({ open, onOpenChange, onAdd, platforms }: AddCr
                             <Label htmlFor="metadata">
                                 Metadata
                             </Label>
-                            <Textarea id="metadata" name="metadata" className="col-span-3" rows={3} placeholder="Nhập metadata" onChange={handleMetadataChange} />
+                            <Textarea id="metadata" name="metadata" className="col-span-3 overflow-y-auto h-50" placeholder="Nhập metadata" onChange={handleMetadataChange} />
                         </div>
 
                     </div>

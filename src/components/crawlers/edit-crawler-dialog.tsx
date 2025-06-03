@@ -119,7 +119,7 @@ export function EditCrawlerDialog({ open, onOpenChange, crawler, onSave, platfor
                                 name="metadata"
                                 value={formData.metadata}
                                 onChange={handleMetadataChange}
-                                className="col-span-3"
+                                className="col-span-3 overflow-y-auto h-50"
                                 required
                             />
                         </div>
