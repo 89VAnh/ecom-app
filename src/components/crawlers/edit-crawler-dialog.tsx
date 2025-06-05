@@ -18,6 +18,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Platform } from "@/services/platforms"
 import { Textarea } from "../ui/textarea"
 import { Crawler } from "@/services/crawlers"
+import JsonViewer from "../ui/json-viewer"
 
 interface EditCrawlerDialogProps {
     open: boolean
@@ -36,6 +37,8 @@ export function EditCrawlerDialog({ open, onOpenChange, crawler, onSave, platfor
         status: crawler?.status || "active",
         metadata: crawler?.metadata || "",
     })
+    const [parsedData, setParsedData] = useState({})
+
 
     useEffect(() => {
         if (crawler) {
@@ -47,6 +50,7 @@ export function EditCrawlerDialog({ open, onOpenChange, crawler, onSave, platfor
                 metadata: JSON.stringify(crawler.metadata),
             })
         }
+        setParsedData(crawler?.metadata)
     }, [crawler])
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -70,10 +74,11 @@ export function EditCrawlerDialog({ open, onOpenChange, crawler, onSave, platfor
     const handleMetadataChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         const { value } = e.target
         setFormData((prev) => ({ ...prev, metadata: value }))
+        setParsedData(JSON.parse(value))
     }
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="sm:max-w-[425px]">
+            <DialogContent className="sm:max-w-[600px]">
                 <form onSubmit={handleSubmit}>
                     <DialogHeader>
                         <DialogTitle>Chỉnh sửa bộ thu thập</DialogTitle>
@@ -119,9 +124,14 @@ export function EditCrawlerDialog({ open, onOpenChange, crawler, onSave, platfor
                                 name="metadata"
                                 value={formData.metadata}
                                 onChange={handleMetadataChange}
-                                className="col-span-3 overflow-y-auto h-50"
+                                className="col-span-3 overflow-y-auto h-40"
                                 required
                             />
+
+                            <div className="col-span-4 border rounded-lg bg-card overflow-auto h-80">
+                                {/* <JsonViewer data={parsedData} /> */}
+                                <JsonViewer data={parsedData} />
+                            </div>
                         </div>
 
                     </div>

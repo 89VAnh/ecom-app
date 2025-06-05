@@ -44,8 +44,7 @@ export default function CrawlersPage() {
         setIsDeleteDialogOpen(false)
     }
 
-    const handleToggleStatus = (crawlerId: number) => {
-        const crawler = crawlers.find((crawler) => crawler.platform_id === crawlerId)
+    const handleToggleStatus = (crawler: Crawler) => {
         if (crawler) {
             const updatedCrawler: Crawler = {
                 ...crawler,
@@ -138,7 +137,7 @@ export default function CrawlersPage() {
                                                         variant="ghost"
                                                         size="sm"
                                                         className="h-8 w-8 p-0 cursor-pointer hover:bg-amber-50 text-amber-600"
-                                                        onClick={() => handleToggleStatus(crawler.platform_id)}
+                                                        onClick={() => handleToggleStatus(crawler)}
                                                     >
                                                         <Pause className="h-4 w-4" />
                                                     </Button>
@@ -147,7 +146,7 @@ export default function CrawlersPage() {
                                                         variant="ghost"
                                                         size="sm"
                                                         className="h-8 w-8 p-0 cursor-pointer hover:bg-green-50 text-green-600"
-                                                        onClick={() => handleToggleStatus(crawler.platform_id)}
+                                                        onClick={() => handleToggleStatus(crawler)}
                                                     >
                                                         <Play className="h-4 w-4" />
                                                     </Button>

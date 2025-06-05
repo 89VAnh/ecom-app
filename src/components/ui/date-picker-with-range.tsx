@@ -1,6 +1,6 @@
 "use client"
 import React, { useEffect } from "react"
-import { format, previousMonday, startOfMonth, startOfWeek, startOfYear } from "date-fns"
+import { format, previousMonday, startOfMonth, startOfYear } from "date-fns"
 import { Calendar as CalendarIcon } from "lucide-react"
 import { DateRange } from "react-day-picker"
 
@@ -30,8 +30,8 @@ export function DatePickerWithRange({
     onDateChange,
 }: DatePickerWithRangeProps) {
     const [date, setDate] = React.useState<DateRange | undefined>({
-        from: startOfWeek(new Date()),
-        to: new Date(),
+        from: undefined,
+        to: undefined,
     });
 
     // Notify parent component when date changes

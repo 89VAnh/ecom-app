@@ -17,6 +17,7 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Platform } from "@/services/platforms"
 import { Textarea } from "@/components/ui/textarea"
+import JsonViewer from "../ui/json-viewer"
 
 interface AddCrawlerDialogProps {
     open: boolean
@@ -32,8 +33,9 @@ export function AddCrawlerDialog({ open, onOpenChange, onAdd, platforms }: AddCr
         platform_id: 0,
         platform: "",
         metadata: "",
-        status: "active",
+        status: "paused",
     })
+    const [parsedData, setParsedData] = useState({})
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target
@@ -56,19 +58,20 @@ export function AddCrawlerDialog({ open, onOpenChange, onAdd, platforms }: AddCr
             platform_id: 0,
             platform: "",
             metadata: "",
-            status: "active",
+            status: "paused",
         })
         onOpenChange(false)
     }
 
     const handleMetadataChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         const { value } = e.target
+        setParsedData(JSON.parse(value))
         setFormData((prev) => ({ ...prev, metadata: value }))
     }
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="sm:max-w-[425px]">
+            <DialogContent className="sm:max-w-[600px]">
                 <form onSubmit={handleSubmit}>
                     <DialogHeader>
                         <DialogTitle>Thêm bộ thu thập mới</DialogTitle>
@@ -109,7 +112,15 @@ export function AddCrawlerDialog({ open, onOpenChange, onAdd, platforms }: AddCr
                             <Label htmlFor="metadata">
                                 Metadata
                             </Label>
-                            <Textarea id="metadata" name="metadata" className="col-span-3 overflow-y-auto h-50" placeholder="Nhập metadata" onChange={handleMetadataChange} />
+                            <Textarea
+                                id="metadata" name="metadata"
+                                onChange={handleMetadataChange}
+                                className="col-span-3 overflow-y-auto h-40"
+                                placeholder="Nhập metadata"
+                            />
+                            <div className="col-span-4 border rounded-lg bg-card overflow-auto h-80">
+                                <JsonViewer data={parsedData} />
+                            </div>
                         </div>
 
                     </div>

@@ -14,7 +14,7 @@ export async function GET(req: NextRequest) {
     const searchParams = req.nextUrl.searchParams;
     const namePattern = searchParams.get("name") || "";
     const result = await pool.query(
-      "SELECT crawler_id, c.name, c.platform_id, p.name  as platform, metadata, status, last_run FROM crawlers c INNER JOIN platforms p ON c.platform_id = p.platform_id WHERE c.name ILIKE $1;",
+      "SELECT crawler_id, c.name, c.platform_id, p.name  as platform, metadata, status, last_run FROM crawlers c INNER JOIN platforms p ON c.platform_id = p.platform_id WHERE c.name ILIKE $1 ORDER BY last_run DESC;",
       [`%${namePattern}%`]
     );
 

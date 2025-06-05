@@ -4,14 +4,14 @@ import { toast } from "sonner";
 
 export function useHistories() {
   const [histories, setHistories] = useState<History[]>([]);
-  const [productName, setProductName] = useState<string>("");
+  const [search, setSearch] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const fetchHistories = async () => {
     try {
       setLoading(true);
-      const data = await getHistories(productName);
+      const data = await getHistories(search);
       setHistories(data);
       setError(null);
     } catch (err) {
@@ -25,16 +25,15 @@ export function useHistories() {
   };
 
   useEffect(() => {
-    if (productName) fetchHistories();
+    fetchHistories();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [productName]);
+  }, [search]);
 
   return {
     histories,
     loading,
     error,
-    productName,
-    setProductName,
+    setSearch,
     fetchHistories,
   };
 }

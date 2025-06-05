@@ -11,11 +11,101 @@ import Image from "next/image"
 import { useProducts } from "@/hooks/useProducts"
 import { usePlatforms } from "@/hooks/usePlatforms"
 import { formatVND } from "@/lib/utils"
+import {
+    Pagination,
+    PaginationContent,
+    PaginationEllipsis,
+    PaginationItem,
+    PaginationLink,
+    PaginationNext,
+    PaginationPrevious,
+} from "@/components/ui/pagination"
+import { Dispatch, SetStateAction } from "react"
+
+const PaginationComponent = ({ totalPages, currentPage, onPageChange }: { totalPages: number, currentPage: number, onPageChange: Dispatch<SetStateAction<number>> }) => {
+    const renderPaginationItems = () => {
+        const items = [];
+        const sidePages = 2; // Show 2 pages on each side of the current page
+
+        // Always show the first page
+        items.push(
+            <PaginationItem key={1}>
+                <PaginationLink
+                    href="#"
+                    isActive={currentPage === 1}
+                    onClick={() => onPageChange(1)}
+                >
+                    1
+                </PaginationLink>
+            </PaginationItem>
+        );
+
+        // Add ellipsis if there are pages between 1 and the start of the middle range
+        if (currentPage > sidePages + 2) {
+            items.push(<PaginationEllipsis key="start-ellipsis" />);
+        }
+
+        // Calculate the range of middle pages to show
+        const startPage = Math.max(2, currentPage - sidePages);
+        const endPage = Math.min(totalPages - 1, currentPage + sidePages);
+
+        // Render middle pages
+        for (let i = startPage; i <= endPage; i++) {
+            items.push(
+                <PaginationItem key={i}>
+                    <PaginationLink
+                        href="#"
+                        isActive={currentPage === i}
+                        onClick={() => onPageChange(i)}
+                    >
+                        {i}
+                    </PaginationLink>
+                </PaginationItem>
+            );
+        }
+
+        // Add ellipsis if there are pages between the end of the middle range and the last page
+        if (endPage < totalPages - 1) {
+            items.push(<PaginationEllipsis key="end-ellipsis" />);
+        }
+
+        // Always show the last page if totalPages > 1
+        if (totalPages > 1) {
+            items.push(
+                <PaginationItem key={totalPages}>
+                    <PaginationLink
+                        href="#"
+                        isActive={currentPage === totalPages}
+                        onClick={() => onPageChange(totalPages)}
+                    >
+                        {totalPages}
+                    </PaginationLink>
+                </PaginationItem>
+            );
+        }
+
+        return items;
+    };
+
+    return (
+        <Pagination>
+
+            <PaginationContent>
+                <PaginationItem>
+                    <PaginationPrevious href="#" onClick={() => onPageChange((prev: number) => prev - 1)} />
+                </PaginationItem>
+                {renderPaginationItems()}
+                <PaginationItem>
+                    <PaginationNext href="#" onClick={() => onPageChange((prev: number) => prev + 1)} />
+                </PaginationItem>
+            </PaginationContent>
+        </Pagination>
+    );
+};
 
 export default function ProductsPage() {
     const { products, total, pageIndex, pageSize, searchParams, loading, setPageIndex, setSearchParams, fetchProducts } = useProducts()
     const { platforms } = usePlatforms()
-    const totalPages = Math.ceil(total / pageSize)
 
     return (
         <div className="space-y-6">
@@ -141,23 +231,11 @@ export default function ProductsPage() {
 
                             {total > 0 && (
                                 <div className="mt-6 flex justify-between items-center">
-                                    <Button
-                                        disabled={pageIndex === 0 || loading}
-                                        onClick={() => setPageIndex(pageIndex - 1)}
-                                        variant="outline"
-                                    >
-                                        Trang trước
-                                    </Button>
-                                    <span>
-                                        Trang {pageIndex + 1} / {totalPages}
-                                    </span>
-                                    <Button
-                                        disabled={pageIndex >= totalPages - 1 || loading}
-                                        onClick={() => setPageIndex(pageIndex + 1)}
-                                        variant="outline"
-                                    >
-                                        Trang sau
-                                    </Button>
+                                    <PaginationComponent
+                                        totalPages={Math.ceil(total / pageSize) - 1}
+                                        currentPage={pageIndex}
+                                        onPageChange={setPageIndex}
+                                    />
                                 </div>
                             )}
                         </>
